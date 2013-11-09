@@ -24,7 +24,7 @@ import java.util.Date;
  * Created by andrew on 11/9/13.
  */
 public class SendCommandTask extends AsyncTask<Void, Void, String> {
-    public static final String URL_SEND_TASK = "amazonserver/send_task_request";
+    public static final String URL_SEND_TASK = "http://ec2-204-236-209-134.compute-1.amazonaws.com:5000/put_command/";
     private Context context;
     private VoiceHackFragment voiceHackFragment;
     private String task;
