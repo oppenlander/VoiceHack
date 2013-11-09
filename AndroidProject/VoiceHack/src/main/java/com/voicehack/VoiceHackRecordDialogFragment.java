@@ -19,11 +19,19 @@ import java.util.ArrayList;
  */
 public class VoiceHackRecordDialogFragment extends DialogFragment implements RecognitionListener {
 
-    SpeechRecognizer sr;
+    private SpeechRecognizer speechRecognizer;
+    private VoiceHackFragment voiceHackFragment;
 
-    public static VoiceHackRecordDialogFragment newInstance() {
-        VoiceHackRecordDialogFragment frag = new VoiceHackRecordDialogFragment();
-        return frag;
+    public static VoiceHackRecordDialogFragment newInstance(VoiceHackFragment voiceHackFragment) {
+        return new VoiceHackRecordDialogFragment(voiceHackFragment);
+    }
+
+    public VoiceHackRecordDialogFragment() {
+        this.voiceHackFragment = null;
+    }
+
+    public VoiceHackRecordDialogFragment(VoiceHackFragment voiceHackFragment) {
+        this.voiceHackFragment = voiceHackFragment;
     }
 
     @Override
@@ -43,113 +51,99 @@ public class VoiceHackRecordDialogFragment extends DialogFragment implements Rec
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getActivity().getPackageName());
 
-        sr = SpeechRecognizer.createSpeechRecognizer(getActivity());
-        sr.setRecognitionListener(this);
-        sr.startListening(intent);
-
-        Log.i("VoiceHack", "isRecognitionAvailable returns " + sr.isRecognitionAvailable(getActivity()));
-
-       //TODO: start recording here
+        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(getActivity());
+        speechRecognizer.setRecognitionListener(this);
+        speechRecognizer.startListening(intent);
     }
 
     @Override
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
 
-        sr.stopListening();
-
-        Log.i("VoiceHack", "onDismissed has been called.");
-
-
-        //TODO: dismissing, might want to do something
+        speechRecognizer.stopListening();
+        speechRecognizer.cancel();
+        speechRecognizer.destroy();
     }
 
     @Override
     public void onReadyForSpeech(Bundle bundle) {
-
+        //Do nothing
     }
 
     @Override
     public void onBeginningOfSpeech() {
-        Log.e("VoiceHack", "Speech has begun.");
+        //Do nothing
     }
 
     @Override
     public void onRmsChanged(float v) {
-
+        //Do nothing
     }
 
     @Override
     public void onBufferReceived(byte[] bytes) {
-
+        //Do nothing
     }
 
     @Override
     public void onEndOfSpeech() {
-        Log.e("VoiceHack", "Speech has ended.");
+        //Do nothing
     }
 
     @Override
-    public void onError(int i) {
-        Log.e("VoiceHack", "Ohse noseee it's an errorrr");
-        switch(i){
+    public void onError(int errorCode) {
+        switch(errorCode){
             case SpeechRecognizer.ERROR_AUDIO:
                 Log.e("VoiceHack", "Audio error.");
                 break;
-
             case SpeechRecognizer.ERROR_CLIENT:
                 Log.e("VoiceHack", "ERROR_CLIENT.");
                 break;
-
             case SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS:
                 Log.e("VoiceHack", "ERROR_INSUFFICIENT_PERMISSIONS.");
                 break;
-
             case SpeechRecognizer.ERROR_NETWORK:
                 Log.e("VoiceHack", "ERROR_NETWORK.");
                 break;
-
             case SpeechRecognizer.ERROR_NETWORK_TIMEOUT:
                 Log.e("VoiceHack", "ERROR_NETWORK_TIMEOUT");
                 break;
-
             case SpeechRecognizer.ERROR_NO_MATCH:
                 Log.e("VoiceHack", "ERROR_NO_MATCH");
                 break;
-
             case SpeechRecognizer.ERROR_RECOGNIZER_BUSY:
                 Log.e("VoiceHack", "ERROR_RECOGNIZER_BUSY");
                 break;
-
             case SpeechRecognizer.ERROR_SERVER:
                 Log.e("VoiceHack", "ERROR_SERVER");
                 break;
-
             case SpeechRecognizer.ERROR_SPEECH_TIMEOUT:
                 Log.e("VoiceHack", "ERROR_SPEECH_TIMEOUT");
                 break;
-
         }
-
+        dismiss();
     }
 
     @Override
     public void onResults(Bundle bundle) {
         Log.e("VoiceHack", "onResults was called");
-        ArrayList<String> command = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+        ArrayList<String> commands = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
 
-        for (String derp: command) {
-            Log.e("VoiceHack", derp);
+        if(commands != null && commands.size() > 0 && voiceHackFragment != null) {
+            //TODO: look at commands and choose the best one, instead of the first one
+            SendCommandTask sendCommandTask = new SendCommandTask(getActivity(), voiceHackFragment, commands.get(0));
+            sendCommandTask.execute();
         }
+        dismiss();
     }
 
     @Override
     public void onPartialResults(Bundle bundle) {
-
+        //Do nothing
     }
 
     @Override
     public void onEvent(int i, Bundle bundle) {
-
+        //Do nothing
     }
 }

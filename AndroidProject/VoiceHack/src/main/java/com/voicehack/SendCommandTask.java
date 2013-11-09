@@ -71,7 +71,7 @@ public class SendCommandTask extends AsyncTask<Void, Void, String> {
         try {
             content = execute.getEntity().getContent();
         } catch (IOException e) {
-            Log.e("VoiceHack", "Could not get InputStream from HttpResponse: " + e.getMessage());;
+            Log.e("VoiceHack", "Could not get InputStream from HttpResponse: " + e.getMessage());
             return TASK_FAILURE;
         }
 
@@ -84,6 +84,7 @@ public class SendCommandTask extends AsyncTask<Void, Void, String> {
             }
         } catch (IOException e) {
             Log.e("VoiceHack", "Could not readLine from HttpResponse buffer: " + e.getMessage());
+            return TASK_FAILURE;
         }
         return response.toString();
     }

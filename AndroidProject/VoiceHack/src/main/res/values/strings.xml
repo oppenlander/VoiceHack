@@ -5,8 +5,6 @@
 
     <string name="recording_command">Recording Command</string>
 
-    <string name="recording_your_voice">Recording your voice…</string>
-
     <string name="action_record_command">Record Command</string>
     <string name="action_help">Help</string>
     <string name="action_settings">Settings</string>

@@ -9,14 +9,18 @@ import android.widget.Toast;
 
 public class VoiceHackActivity extends ActionBarActivity {
 
+    private VoiceHackFragment voiceHackFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_voicehack);
 
+        voiceHackFragment = new VoiceHackFragment();
+
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new VoiceHackFragment())
+                    .add(R.id.container, voiceHackFragment)
                     .commit();
         }
     }
@@ -37,7 +41,7 @@ public class VoiceHackActivity extends ActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
             case R.id.action_record_dialog:
-                DialogFragment dialogFragment = VoiceHackRecordDialogFragment.newInstance();
+                DialogFragment dialogFragment = VoiceHackRecordDialogFragment.newInstance(voiceHackFragment);
                 dialogFragment.show(getSupportFragmentManager(), "record_dialog");
                 return true;
             case R.id.action_help:
