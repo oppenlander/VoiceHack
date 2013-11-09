@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import java.util.ArrayList;
 
@@ -40,6 +41,24 @@ public class VoiceHackRecordDialogFragment extends DialogFragment implements Rec
         View v = inflater.inflate(R.layout.fragment_record_dialog, container, false);
 
         getDialog().setTitle(R.string.recording_command);
+
+        View.OnClickListener cancelListener = new View.OnClickListener() {
+            public void onClick(View view) {
+                onDismiss(getDialog());
+            }
+        };
+
+        View.OnClickListener doneListener = new View.OnClickListener() {
+            public void onClick(View view) {
+                Log.e("VoiceHack", "doneListener.");
+            }
+        };
+
+        Button cancelButton = (Button)v.findViewById(R.id.cancelButton);
+        Button doneButton = (Button)v.findViewById(R.id.doneButton);
+
+        cancelButton.setOnClickListener(cancelListener);
+        doneButton.setOnClickListener(doneListener);
 
         return v;
     }
