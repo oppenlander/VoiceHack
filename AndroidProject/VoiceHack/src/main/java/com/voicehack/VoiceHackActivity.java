@@ -1,15 +1,11 @@
 package com.voicehack;
 
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.os.Build;
+import android.widget.Toast;
 
 public class VoiceHackActivity extends ActionBarActivity {
 
@@ -40,7 +36,15 @@ public class VoiceHackActivity extends ActionBarActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
+            case R.id.action_record_dialog:
+                DialogFragment dialogFragment = VoiceHackRecordDialogFragment.newInstance();
+                dialogFragment.show(getSupportFragmentManager(), "record_dialog");
+                return true;
+            case R.id.action_help:
+                Toast.makeText(this, R.string.help_not_implemented, Toast.LENGTH_LONG).show();
+                return true;
             case R.id.action_settings:
+                Toast.makeText(this, R.string.settings_not_implemented, Toast.LENGTH_LONG).show();
                 return true;
         }
         return super.onOptionsItemSelected(item);

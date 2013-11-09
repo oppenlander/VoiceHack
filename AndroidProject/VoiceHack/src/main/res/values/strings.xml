@@ -2,10 +2,21 @@
 <resources>
 
     <string name="app_name">Voice Hack</string>
-    <string name="hello_world">Hello world!</string>
+
+    <string name="recording_command">Recording Command</string>
+
+    <string name="recording_your_voice">Recording your voice…</string>
+
+    <string name="action_record_command">Record Command</string>
+    <string name="action_help">Help</string>
     <string name="action_settings">Settings</string>
-    <string name="press_button">Press Button</string>
-    <string name="voice_button">Voice Button</string>
-    <string name="recording_your_voice">Recording your voice...</string>
+
+    <string name="task_command_error">Error: Couldn\'t send command to the server.</string>
+    <string name="task_command_success">Command successfully sent to the server.</string>
+
+    <string name="history_error_add">Error: Couldn\'t add command to history.</string>
+
+    <string name="help_not_implemented">Help Not Implemented</string>
+    <string name="settings_not_implemented">Settings Not Implemented</string>
 
 </resources>

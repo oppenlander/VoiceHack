@@ -1,19 +1,30 @@
 package com.voicehack;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
 
-public class VoiceHackFragment extends Fragment {
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
-    private Button voiceButton;
+public class VoiceHackFragment extends Fragment
+        implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
+
+    private List<String> voiceHistory;
+    private ArrayAdapter<String> voiceHistoryArrayAdapter;
 
     public VoiceHackFragment() {
-
+        voiceHistory = new ArrayList<String>();
     }
 
     @Override
@@ -24,17 +35,72 @@ public class VoiceHackFragment extends Fragment {
             return container;
         }
 
-        voiceButton = (Button) rootView.findViewById(R.id.voice_button);
-        voiceButton.setOnClickListener(voiceButtonClickListener);
+        ListView voiceHistoryList = (ListView) rootView.findViewById(R.id.voice_history_list);
+        voiceHistoryArrayAdapter = new VoiceHistoryArrayAdapter(
+                getActivity(), R.layout.voice_history_list_item,
+                R.id.voice_history_item_text, voiceHistory
+        );
+        voiceHistoryList.setAdapter(voiceHistoryArrayAdapter);
+        voiceHistoryList.setOnItemClickListener(this);
+        voiceHistoryList.setOnItemLongClickListener(this);
+
+
+        updateHistory();
 
         return rootView;
     }
 
-    private View.OnClickListener voiceButtonClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            DialogFragment dialogFragment = VoiceHackRecordDialogFragment.newInstance();
-            dialogFragment.show(getFragmentManager(), "record_dialog");
+    public void updateHistory() {
+        voiceHistory = new ArrayList<String>();
+        SharedPreferences historyPreferences = getActivity().getSharedPreferences("history", Context.MODE_PRIVATE);
+        Map<String, ?> history = historyPreferences.getAll();
+        if(history != null) {
+            for(String task : history.keySet()) {
+                int i = 0;
+                for(; i < voiceHistory.size(); ++i) {
+                    if(((Long)history.get(voiceHistory.get(i))).compareTo((Long)history.get(task)) < 0) {
+                        break;
+                    }
+                }
+                voiceHistory.add(i, task);
+            }
         }
-    };
+        voiceHistoryArrayAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+        Log.i("VoiceHack", "Item clicked: " + position);
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
+        Log.i("VoiceHack", "Item long clicked: " + position);
+        return false;
+    }
+
+    private class VoiceHistoryArrayAdapter extends ArrayAdapter<String> {
+
+        public VoiceHistoryArrayAdapter(Context context, int resource, int textViewResourceId, List<String> objects) {
+            super(context, resource, textViewResourceId, objects);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View v = convertView;
+            if(v == null) {
+                LayoutInflater layoutInflater = getActivity().getLayoutInflater();
+                v = layoutInflater.inflate(R.layout.voice_history_list_item, parent);
+            }
+            if(v == null) {
+                Log.e("VoiceHack", "Could not create a list view for history item.");
+                return parent;
+            }
+
+            TextView itemText = (TextView) v.findViewById(R.id.voice_history_item_text);
+            itemText.setText(getItem(position));
+
+            return v;
+        }
+    }
 }

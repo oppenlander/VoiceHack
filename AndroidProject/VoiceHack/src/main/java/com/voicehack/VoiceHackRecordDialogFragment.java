@@ -31,6 +31,8 @@ public class VoiceHackRecordDialogFragment extends DialogFragment implements Rec
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_record_dialog, container, false);
 
+        getDialog().setTitle(R.string.recording_command);
+
         return v;
     }
 
