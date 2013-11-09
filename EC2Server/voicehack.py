@@ -4,18 +4,18 @@ app = Flask(__name__)
 @app.route('/put_task', methods=['POST'])
 def put_task():
 	print "put task"
-	if 'command' in request.form:
-		command = request.form['command']
+	if 'command' in request.json:
+		command = request.json['command']
 		print command
 	return "success"
 
-@app.route('/get_task', mehtods=['GET'])
+@app.route('/get_task', methods=['GET'])
 def get_task():
 	print "get task"
 	command = 'open garage door'
 	timestamp = 0
 	used = 0
-	ret = "{'command': %s, 'timestamp': %i, 'used': %i}" % command, timestamp, used
+	ret = "{'command': %s, 'timestamp': %d, 'used': %d}" % command, timestamp, used
 	print ret
 	return ret
 
