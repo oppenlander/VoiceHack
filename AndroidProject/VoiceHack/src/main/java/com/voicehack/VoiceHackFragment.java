@@ -68,12 +68,10 @@ public class VoiceHackFragment extends Fragment
         voiceHistoryArrayAdapter.notifyDataSetChanged();
     }
 
-    @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
         Log.i("VoiceHack", "Item clicked: " + position);
     }
 
-    @Override
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
         Log.i("VoiceHack", "Item long clicked: " + position);
         return false;
