@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import java.util.ArrayList;
 
@@ -21,6 +22,7 @@ public class VoiceHackRecordDialogFragment extends DialogFragment implements Rec
 
     private SpeechRecognizer speechRecognizer;
     private VoiceHackFragment voiceHackFragment;
+    private Button cancelButton, doneButton;
 
     public static VoiceHackRecordDialogFragment newInstance(VoiceHackFragment voiceHackFragment) {
         return new VoiceHackRecordDialogFragment(voiceHackFragment);
@@ -40,6 +42,27 @@ public class VoiceHackRecordDialogFragment extends DialogFragment implements Rec
         View v = inflater.inflate(R.layout.fragment_record_dialog, container, false);
 
         getDialog().setTitle(R.string.recording_command);
+
+        View.OnClickListener cancelListener = new View.OnClickListener() {
+            public void onClick(View view) {
+                dismiss();
+            }
+        };
+
+        View.OnClickListener doneListener = new View.OnClickListener() {
+            public void onClick(View view) {
+                speechRecognizer.stopListening();
+                cancelButton.setEnabled(false);
+                doneButton.setEnabled(false);
+
+            }
+        };
+
+        cancelButton = (Button)v.findViewById(R.id.cancelButton);
+        doneButton = (Button)v.findViewById(R.id.doneButton);
+
+        cancelButton.setOnClickListener(cancelListener);
+        doneButton.setOnClickListener(doneListener);
 
         return v;
     }
@@ -129,6 +152,10 @@ public class VoiceHackRecordDialogFragment extends DialogFragment implements Rec
         Log.e("VoiceHack", "onResults was called");
         ArrayList<String> commands = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
 
+        for (String tokens: commands) {
+            Log.e("VoiceHack", tokens);
+        }
+
         if(commands != null && commands.size() > 0 && voiceHackFragment != null) {
             //TODO: look at commands and choose the best one, instead of the first one
             SendCommandTask sendCommandTask = new SendCommandTask(getActivity(), voiceHackFragment, commands.get(0));
@@ -140,6 +167,7 @@ public class VoiceHackRecordDialogFragment extends DialogFragment implements Rec
     @Override
     public void onPartialResults(Bundle bundle) {
         //Do nothing
+        Log.e("VoiceHack", "onPartialResults has " + "");
     }
 
     @Override
