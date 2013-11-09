@@ -1,6 +1,7 @@
 package com.voicehack;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -50,6 +51,9 @@ public class VoiceHackActivity extends ActionBarActivity {
                 Toast.makeText(this, R.string.help_not_implemented, Toast.LENGTH_LONG).show();
                 return true;
             case R.id.action_settings:
+                Intent settingsIntent = new Intent(this, SettingsActivity.class);
+                startActivity(settingsIntent);
+
                 Toast.makeText(this, R.string.settings_not_implemented, Toast.LENGTH_LONG).show();
                 return true;
         }
