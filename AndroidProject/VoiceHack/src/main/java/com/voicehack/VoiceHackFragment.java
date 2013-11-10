@@ -1,6 +1,8 @@
 package com.voicehack;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -74,6 +76,22 @@ public class VoiceHackFragment extends Fragment
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
         Log.i("VoiceHack", "Item clicked: " + position);
+
+        AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
+        alertDialog.setTitle("Item Selected");
+        alertDialog.setMessage("You just clicked an item position #" + String.valueOf(position));
+                alertDialog.setButton("OK",new DialogInterface.OnClickListener(){
+                    public void onClick(DialogInterface dialog, int which) {
+                        return;
+                    } });
+        alertDialog.show();
+
+        /*
+        super.onListItemClick(l, v, position, id);
+
+        SendCommandTask sendCommandTask = new SendCommandTask(getActivity(), voiceHackFragment, commands.get(0));
+        sendCommandTask.execute();
+        */
     }
 
     @Override
