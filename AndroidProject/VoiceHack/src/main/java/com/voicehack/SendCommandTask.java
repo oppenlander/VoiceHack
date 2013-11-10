@@ -86,7 +86,7 @@ public class SendCommandTask extends AsyncTask<Void, Void, String> {
                 doorAdjectiveCounter++;
             }
 
-            if (token.equals("one") || token.equals("two") || token.equals("three") || token.equals("all")) {
+            if (token.equals("1") || token.equals("2") || token.equals("3") || token.equals("all")) {
                 adjective = token;
                 lightAdjectiveCounter++;
             }
@@ -98,7 +98,7 @@ public class SendCommandTask extends AsyncTask<Void, Void, String> {
             outbox = verb + " " + noun + " " + adjective;
         }
 
-        if (lightVerbCounter == 1 && lightAdjectiveCounter == 1 && noun.equals("light")) {
+        else if (lightVerbCounter == 1 && lightAdjectiveCounter == 1 && noun.equals("light")) {
             outbox = verb + " " + noun + " " + adjective;
         }
 
