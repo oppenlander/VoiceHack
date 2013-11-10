@@ -86,7 +86,7 @@ public class SendCommandTask extends AsyncTask<Void, Void, String> {
                 doorAdjectiveCounter++;
             }
 
-            if (token.equals("1") || token.equals("2") || token.equals("3") || token.equals("all")) {
+            if (token.equals("1") || token.equals("one") || token.equals("2") || token.equals("two") || token.equals("3") || token.equals("all")) {
                 adjective = token;
                 lightAdjectiveCounter++;
             }

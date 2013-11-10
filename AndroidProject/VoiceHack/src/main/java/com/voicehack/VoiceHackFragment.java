@@ -72,6 +72,7 @@ public class VoiceHackFragment extends Fragment
             }
         }
         voiceHistoryArrayAdapter.notifyDataSetChanged();
+
     }
 
     @Override
@@ -118,5 +119,6 @@ public class VoiceHackFragment extends Fragment
 
             return v;
         }
+
     }
 }
