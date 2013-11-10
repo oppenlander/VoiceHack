@@ -31,6 +31,7 @@ public class SendCommandTask extends AsyncTask<Void, Void, String> {
     private VoiceHackFragment voiceHackFragment;
     private String taskString;
     private final String TASK_FAILURE = "failure";
+    private final String AMBIGUOUS_FAILURE = "ambiguous command";
 
     public SendCommandTask(Context context, VoiceHackFragment voiceHackFragment, String taskString) {
         super();
@@ -47,6 +48,67 @@ public class SendCommandTask extends AsyncTask<Void, Void, String> {
         HttpPost httpPost = new HttpPost(URL_SEND_TASK);
 
         //TODO: do fancy processing on the taskString
+        //begin interpreting
+        String noun = "non", verb = "vrb", adjective = "adj";
+        int doorVerbCounter = 0, lightVerbCounter = 0;
+        int nounCounter = 0;
+        int doorAdjectiveCounter = 0, lightAdjectiveCounter = 0;
+
+        String[] tokens = taskString.split("\\s+"); //assuming first result is best
+
+        for (String token: tokens) {
+            Log.e("VoiceHack", token);
+        }
+
+        for (String token: tokens) {
+            if (token.equals("open") || token.equals("close") || token.equals("lock") || token.equals("unlock")) {
+                verb = token;
+                doorVerbCounter++;
+            }
+
+            if (token.equals("on") || token.equals("off")) {
+                verb = token;
+                lightVerbCounter++;
+            }
+
+            if (token.equals("door") || token.equals("doors")) {
+                noun = "door";
+                nounCounter++;
+            }
+
+            if (token.equals("light") || token.equals("lights")) {
+                noun = "light";
+                nounCounter++;
+            }
+
+            if (token.equals("garage") || token.equals("front") || token.equals("all")) {
+                adjective = token;
+                doorAdjectiveCounter++;
+            }
+
+            if (token.equals("one") || token.equals("two") || token.equals("three") || token.equals("all")) {
+                adjective = token;
+                lightAdjectiveCounter++;
+            }
+        }
+
+        String outbox = "";
+
+        if (doorVerbCounter == 1 && doorAdjectiveCounter == 1 && noun.equals("door")) {
+            outbox = verb + " " + noun + " " + adjective;
+        }
+
+        if (lightVerbCounter == 1 && lightAdjectiveCounter == 1 && noun.equals("light")) {
+            outbox = verb + " " + noun + " " + adjective;
+        }
+
+        else {
+            outbox = verb + " " + noun + " " + adjective;
+            Log.e("VoiceHack", "The closest outbox is " + outbox);
+            Log.e("VoiceHack", "doorVerbCounter is " + doorVerbCounter + ", doorAjectiveCounter is " + doorAdjectiveCounter + ", and noun is " + noun);
+            Log.e("VoiceHack", "lightVerbCounter is " + lightVerbCounter + ", lightAdjectiveCounter is " + lightAdjectiveCounter + ", and noun is " + noun);
+            return AMBIGUOUS_FAILURE;
+        }
 
         JSONObject jsonObject = new JSONObject();
         try {
@@ -102,7 +164,12 @@ public class SendCommandTask extends AsyncTask<Void, Void, String> {
 
     @Override
     protected void onPostExecute(String result) {
-        if(result.equals(TASK_FAILURE)) {
+        if(result.equals(AMBIGUOUS_FAILURE)) {
+            Toast.makeText(context, R.string.task_ambiguous_error, Toast.LENGTH_LONG).show();
+        }
+
+        else if(result.equals(TASK_FAILURE)) {
+            //Log.e("VoiceHack", "The outbox you sent is " + taskString);
             Toast.makeText(context, R.string.task_command_error, Toast.LENGTH_LONG).show();
         } else {
             Toast.makeText(context, R.string.task_command_success, Toast.LENGTH_SHORT).show();

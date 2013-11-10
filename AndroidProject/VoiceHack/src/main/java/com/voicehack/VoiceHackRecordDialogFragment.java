@@ -150,15 +150,18 @@ public class VoiceHackRecordDialogFragment extends DialogFragment implements Rec
     @Override
     public void onResults(Bundle bundle) {
         Log.e("VoiceHack", "onResults was called");
-        ArrayList<String> commands = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+        ArrayList<String> sentences = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
 
-        for (String tokens: commands) {
+
+
+/*
+            for (String tokens: commands) {
             Log.e("VoiceHack", tokens);
         }
-
-        if(commands != null && commands.size() > 0 && voiceHackFragment != null) {
+*/
+        if(sentences != null && sentences.size() > 0 && voiceHackFragment != null) {
             //TODO: look at commands and choose the best one, instead of the first one
-            SendCommandTask sendCommandTask = new SendCommandTask(getActivity(), voiceHackFragment, commands.get(0));
+            SendCommandTask sendCommandTask = new SendCommandTask(getActivity(), voiceHackFragment, sentences.get(0));
             sendCommandTask.execute();
         }
         dismiss();

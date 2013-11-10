@@ -58,6 +58,7 @@ public class VoiceHackFragment extends Fragment
         }
         voiceHistory.clear();
         SharedPreferences historyPreferences = getActivity().getSharedPreferences("history", Context.MODE_PRIVATE);
+
         Map<String, ?> history = historyPreferences.getAll();
         if(history != null) {
             for(String task : history.keySet()) {
@@ -77,26 +78,15 @@ public class VoiceHackFragment extends Fragment
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
         Log.i("VoiceHack", "Item clicked: " + position);
 
-        AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
-        alertDialog.setTitle("Item Selected");
-        String command = adapterView.getItemAtPosition(position).toString();
-        alertDialog.setMessage("You just clicked an item position #" + command);
-        SendCommandTask sendCommandTask = new SendCommandTask(getActivity(), this, command);
+        String inbox = adapterView.getItemAtPosition(position).toString();
+
+        //need to get the command string from the voicehackrecordialogfragment homie
+        SendCommandTask sendCommandTask = new SendCommandTask(getActivity(), this, inbox);
         sendCommandTask.execute();
 
-                alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        return;
-                    }
-                });
-        alertDialog.show();
 
-        /*
-        super.onListItemClick(l, v, position, id);
 
-        SendCommandTask sendCommandTask = new SendCommandTask(getActivity(), voiceHackFragment, commands.get(0));
-        sendCommandTask.execute();
-        */
+
     }
 
     @Override
