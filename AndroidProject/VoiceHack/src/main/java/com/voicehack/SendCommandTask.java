@@ -50,10 +50,11 @@ public class SendCommandTask extends AsyncTask<Void, Void, String> {
         //TODO: do fancy processing on the taskString
         //begin interpreting
         String noun = "non", verb = "vrb", adjective = "adj";
-        int doorVerbCounter = 0, lightVerbCounter = 0;
         int nounCounter = 0;
+        int doorVerbCounter = 0, lightVerbCounter = 0;
         int doorAdjectiveCounter = 0, lightAdjectiveCounter = 0;
         int christmasCounter = 0;
+        int ambiguousOneCounter = 0, ambiguousTwoCounter = 0, ambiguousOffCounter = 0;
 
         String[] tokens = taskString.split("\\s+"); //assuming first result is best
 
@@ -62,6 +63,8 @@ public class SendCommandTask extends AsyncTask<Void, Void, String> {
         }
 
         for (String token: tokens) {
+            token = token.toLowerCase();
+
             if (token.equals("open") || token.equals("close") || token.equals("lock") || token.equals("unlock")) {
                 verb = token;
                 doorVerbCounter++;
@@ -82,40 +85,58 @@ public class SendCommandTask extends AsyncTask<Void, Void, String> {
                 nounCounter++;
             }
 
-            if (token.equals("garage") || token.equals("front") || token.equals("all")) {
+            if (token.equals("garage") || token.equals("front")) {
                 adjective = token;
                 doorAdjectiveCounter++;
             }
 
-            if (token.equals("1") || token.equals("one") || token.equals("2") || token.equals("two") || token.equals("3") || token.equals("all")) {
+            if (token.equals("1") || token.equals("one") || token.equals("2") || token.equals("two") || token.equals("3") || token.equals("three") || token.equals("all")) {
                 adjective = token;
                 lightAdjectiveCounter++;
             }
 
-            if (token.equals("Christmas") || token.equals("Ho")) {
+            if (token.equals("christmas") || token.equals("Ho")) {
+                nounCounter++;
                 christmasCounter++;
-                noun = "Christmas";
-                verb = "Christmas";
-                adjective = "Christmas";
+                noun = "christmas";
+                verb = "christmas";
+                adjective = "christmas";
+            }
+
+            if(token.equals("won")) {
+                ambiguousOneCounter++;
+            }
+
+            if(token.equals("too") || token.equals("to")) {
+                ambiguousTwoCounter++;
+            }
+
+            if(token.equals("of")) {
+                ambiguousOffCounter++;
             }
         }
 
         String outbox = "";
 
-        if (doorVerbCounter == 1 && doorAdjectiveCounter == 1 && noun.equals("door")) {
-            outbox = verb + " " + noun + " " + adjective;
-        }
-
-        else if (lightVerbCounter == 1 && lightAdjectiveCounter == 1 && noun.equals("light")) {
-            outbox = verb + " " + noun + " " + adjective;
-        }
-
-        else if (noun.equals("Christmas") || verb.equals("Christmas") || adjective.equals("Christmas") || christmasCounter >= 3) {
+        if (nounCounter == 1 && doorVerbCounter == 1 && doorAdjectiveCounter == 1 && noun.equals("door") &&
+                ((adjective.equals("garage") && (verb.equals("open") || verb.equals("close"))) ||
+                adjective.equals("front") && (verb.equals("lock") || verb.equals("unlock")))) {
+            outbox = verb + " door " + adjective;
+        } else if(nounCounter == 1 && lightVerbCounter == 1 && lightAdjectiveCounter == 1 && noun.equals("light")) {
+            outbox = verb + " light " + adjective;
+        } else if(nounCounter == 1 && lightVerbCounter == 1 && ambiguousOneCounter == 1 && noun.equals("light")) {
+            outbox = verb + " light one";
+        } else if(nounCounter == 1 && lightVerbCounter == 1 && ambiguousTwoCounter == 1 && noun.equals("light")) {
+            outbox = verb + " light two";
+        } else if(nounCounter == 1 && lightVerbCounter == 0 && ambiguousOffCounter == 1 && lightAdjectiveCounter == 1 && noun.equals("light")) {
+            outbox = "off light " + adjective;
+        } else if(nounCounter == 1 && lightVerbCounter == 0 && ambiguousOffCounter == 1 && ambiguousOneCounter == 1 && noun.equals("light")) {
+            outbox = "off light one";
+        } else if(nounCounter == 1 && lightVerbCounter == 0 && ambiguousOffCounter == 1 && ambiguousTwoCounter == 1 && noun.equals("light")) {
+            outbox = "off light two";
+        } else if (nounCounter == 1 && noun.equals("christmas") || verb.equals("christmas") || adjective.equals("christmas") || christmasCounter >= 3) {
             outbox = "christmas";
-        }
-
-
-        else {
+        } else {
             outbox = verb + " " + noun + " " + adjective;
             Log.e("VoiceHack", "The closest outbox is " + outbox);
             Log.e("VoiceHack", "doorVerbCounter is " + doorVerbCounter + ", doorAjectiveCounter is " + doorAdjectiveCounter + ", and noun is " + noun);
@@ -126,7 +147,7 @@ public class SendCommandTask extends AsyncTask<Void, Void, String> {
 
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.accumulate("command", taskString);
+            jsonObject.accumulate("command", outbox);
         } catch (JSONException e) {
             Log.e("VoiceHack", "Something went wrong while encoding jsonObject as string: " + e.getMessage());
             return TASK_FAILURE;
@@ -180,10 +201,7 @@ public class SendCommandTask extends AsyncTask<Void, Void, String> {
     protected void onPostExecute(String result) {
         if(result.equals(AMBIGUOUS_FAILURE)) {
             Toast.makeText(context, R.string.task_ambiguous_error, Toast.LENGTH_LONG).show();
-        }
-
-        else if(result.equals(TASK_FAILURE)) {
-            //Log.e("VoiceHack", "The outbox you sent is " + taskString);
+        } else if(result.equals(TASK_FAILURE)) {
             Toast.makeText(context, R.string.task_command_error, Toast.LENGTH_LONG).show();
         } else {
             Toast.makeText(context, R.string.task_command_success, Toast.LENGTH_SHORT).show();
@@ -198,5 +216,6 @@ public class SendCommandTask extends AsyncTask<Void, Void, String> {
 
             voiceHackFragment.updateHistory();
         }
+        voiceHackFragment.updateHistory();
     }
 }
