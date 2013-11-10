@@ -1,8 +1,6 @@
 package com.voicehack;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -57,7 +55,7 @@ public class VoiceHackFragment extends Fragment
             return;
         }
         voiceHistory.clear();
-        SharedPreferences historyPreferences = getActivity().getSharedPreferences("history", Context.MODE_PRIVATE);
+        SharedPreferences historyPreferences = getActivity().getSharedPreferences("history", Context.MODE_MULTI_PROCESS);
 
         Map<String, ?> history = historyPreferences.getAll();
         if(history != null) {

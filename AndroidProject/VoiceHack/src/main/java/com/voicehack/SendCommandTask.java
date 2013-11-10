@@ -174,9 +174,10 @@ public class SendCommandTask extends AsyncTask<Void, Void, String> {
         } else {
             Toast.makeText(context, R.string.task_command_success, Toast.LENGTH_SHORT).show();
 
-            SharedPreferences historyPreferences = context.getSharedPreferences("history", Context.MODE_PRIVATE);
+            SharedPreferences historyPreferences = context.getSharedPreferences("history", Context.MODE_MULTI_PROCESS);
             SharedPreferences.Editor historyEditor = historyPreferences.edit();
             historyEditor.putLong(taskString, new Date().getTime());
+            historyEditor.apply();
             if(!historyEditor.commit()) {
                 Toast.makeText(context, R.string.history_error_add, Toast.LENGTH_LONG).show();
             }

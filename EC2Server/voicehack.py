@@ -24,7 +24,7 @@ def put_task():
 @app.route('/get_task_fake', methods=['GET'])
 def get_task_fake():
 	print "get task fake"
-	return '{"command":"open garage door","timestamp":"0","used"="0"}'
+	return '{"command":"open garage door","timestamp":"0","used":"0"}'
 
 @app.route('/get_task', methods=['GET'])
 def get_task():
