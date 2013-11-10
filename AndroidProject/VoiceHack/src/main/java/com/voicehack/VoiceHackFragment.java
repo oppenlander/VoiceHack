@@ -79,11 +79,16 @@ public class VoiceHackFragment extends Fragment
 
         AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
         alertDialog.setTitle("Item Selected");
-        alertDialog.setMessage("You just clicked an item position #" + String.valueOf(position));
-                alertDialog.setButton("OK",new DialogInterface.OnClickListener(){
+        String command = adapterView.getItemAtPosition(position).toString();
+        alertDialog.setMessage("You just clicked an item position #" + command);
+        SendCommandTask sendCommandTask = new SendCommandTask(getActivity(), this, command);
+        sendCommandTask.execute();
+
+                alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         return;
-                    } });
+                    }
+                });
         alertDialog.show();
 
         /*
