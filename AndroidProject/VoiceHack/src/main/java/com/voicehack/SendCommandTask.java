@@ -12,6 +12,8 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -24,17 +26,17 @@ import java.util.Date;
  * Created by andrew on 11/9/13.
  */
 public class SendCommandTask extends AsyncTask<Void, Void, String> {
-    public static final String URL_SEND_TASK = "http://ec2-204-236-209-134.compute-1.amazonaws.com:5000/put_command/";
+    public static final String URL_SEND_TASK = "http://ec2-204-236-209-134.compute-1.amazonaws.com:5000/put_task";
     private Context context;
     private VoiceHackFragment voiceHackFragment;
-    private String task;
-    private final String TASK_FAILURE = "Failure";
+    private String taskString;
+    private final String TASK_FAILURE = "failure";
 
-    public SendCommandTask(Context context, VoiceHackFragment voiceHackFragment, String task) {
+    public SendCommandTask(Context context, VoiceHackFragment voiceHackFragment, String taskString) {
         super();
         this.context = context;
         this.voiceHackFragment = voiceHackFragment;
-        this.task = task;
+        this.taskString = taskString;
     }
 
     @Override
@@ -43,18 +45,27 @@ public class SendCommandTask extends AsyncTask<Void, Void, String> {
 
         DefaultHttpClient client = new DefaultHttpClient();
         HttpPost httpPost = new HttpPost(URL_SEND_TASK);
-        httpPost.setHeader("Content-Type", "application/json");
 
-        //TODO: do fancy processing on the task
+        //TODO: do fancy processing on the taskString
 
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.accumulate("command", taskString);
+        } catch (JSONException e) {
+            Log.e("VoiceHack", "Something went wrong while encoding jsonObject as string: " + e.getMessage());
+            return TASK_FAILURE;
+        }
         HttpEntity taskEntity;
         try {
-            taskEntity = new StringEntity("{'task':" + task + "}");
+            taskEntity = new StringEntity(jsonObject.toString());
         } catch (UnsupportedEncodingException e) {
-            Log.e("VoiceHack", "Something went wrong while encoding the task: " + e.getMessage());
+            Log.e("VoiceHack", "Something went wrong while encoding the jsonObject: " + e.getMessage());
             return TASK_FAILURE;
         }
         httpPost.setEntity(taskEntity);
+
+        httpPost.setHeader("Accept", "application/json");
+        httpPost.setHeader("Content-Type", "application/json");
 
         HttpResponse execute;
         try {
@@ -98,7 +109,7 @@ public class SendCommandTask extends AsyncTask<Void, Void, String> {
 
             SharedPreferences historyPreferences = context.getSharedPreferences("history", Context.MODE_PRIVATE);
             SharedPreferences.Editor historyEditor = historyPreferences.edit();
-            historyEditor.putLong(task, new Date().getTime());
+            historyEditor.putLong(taskString, new Date().getTime());
             if(!historyEditor.commit()) {
                 Toast.makeText(context, R.string.history_error_add, Toast.LENGTH_LONG).show();
             }
