@@ -53,6 +53,7 @@ public class SendCommandTask extends AsyncTask<Void, Void, String> {
         int doorVerbCounter = 0, lightVerbCounter = 0;
         int nounCounter = 0;
         int doorAdjectiveCounter = 0, lightAdjectiveCounter = 0;
+        int christmasCounter = 0;
 
         String[] tokens = taskString.split("\\s+"); //assuming first result is best
 
@@ -90,6 +91,13 @@ public class SendCommandTask extends AsyncTask<Void, Void, String> {
                 adjective = token;
                 lightAdjectiveCounter++;
             }
+
+            if (token.equals("Christmas") || token.equals("Ho")) {
+                christmasCounter++;
+                noun = "Christmas";
+                verb = "Christmas";
+                adjective = "Christmas";
+            }
         }
 
         String outbox = "";
@@ -102,11 +110,17 @@ public class SendCommandTask extends AsyncTask<Void, Void, String> {
             outbox = verb + " " + noun + " " + adjective;
         }
 
+        else if (noun.equals("Christmas") || verb.equals("Christmas") || adjective.equals("Christmas") || christmasCounter >= 3) {
+            outbox = "christmas";
+        }
+
+
         else {
             outbox = verb + " " + noun + " " + adjective;
             Log.e("VoiceHack", "The closest outbox is " + outbox);
             Log.e("VoiceHack", "doorVerbCounter is " + doorVerbCounter + ", doorAjectiveCounter is " + doorAdjectiveCounter + ", and noun is " + noun);
             Log.e("VoiceHack", "lightVerbCounter is " + lightVerbCounter + ", lightAdjectiveCounter is " + lightAdjectiveCounter + ", and noun is " + noun);
+            Log.e("VoiceHack", "christmasCounter is " + christmasCounter + ", noun is " + noun + ", verb is " + verb + ", adjective is " + adjective);
             return AMBIGUOUS_FAILURE;
         }
 
