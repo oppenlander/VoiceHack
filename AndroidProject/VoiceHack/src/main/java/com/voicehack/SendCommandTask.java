@@ -30,7 +30,7 @@ public class SendCommandTask extends AsyncTask<Void, Void, String> {
     private Context context;
     private VoiceHackFragment voiceHackFragment;
     private String taskString;
-    private final String TASK_FAILURE = "Failure";
+    private final String TASK_FAILURE = "failure";
 
     public SendCommandTask(Context context, VoiceHackFragment voiceHackFragment, String taskString) {
         super();

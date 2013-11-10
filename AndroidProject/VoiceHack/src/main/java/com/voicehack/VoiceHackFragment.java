@@ -54,7 +54,7 @@ public class VoiceHackFragment extends Fragment
         if(getActivity() == null) {
             return;
         }
-        voiceHistory = new ArrayList<String>();
+        voiceHistory.clear();
         SharedPreferences historyPreferences = getActivity().getSharedPreferences("history", Context.MODE_PRIVATE);
         Map<String, ?> history = historyPreferences.getAll();
         if(history != null) {
@@ -93,7 +93,7 @@ public class VoiceHackFragment extends Fragment
             View v = convertView;
             if(v == null) {
                 LayoutInflater layoutInflater = getActivity().getLayoutInflater();
-                v = layoutInflater.inflate(R.layout.voice_history_list_item, parent);
+                v = layoutInflater.inflate(R.layout.voice_history_list_item, parent, false);
             }
             if(v == null) {
                 Log.e("VoiceHack", "Could not create a list view for history item.");
