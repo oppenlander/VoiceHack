@@ -49,14 +49,12 @@ public class VoiceHackActivity extends ActionBarActivity {
                 DialogFragment dialogFragment = VoiceHackRecordDialogFragment.newInstance(voiceHackFragment);
                 dialogFragment.show(getSupportFragmentManager(), "record_dialog");
                 return true;
-            case R.id.action_help:
-                Toast.makeText(this, R.string.help_not_implemented, Toast.LENGTH_LONG).show();
-                return true;
+//            case R.id.action_help:
+//                Toast.makeText(this, R.string.help_not_implemented, Toast.LENGTH_LONG).show();
+//                return true;
             case R.id.action_settings:
                 Intent settingsIntent = new Intent(this, SettingsActivity.class);
                 startActivity(settingsIntent);
-
-                Toast.makeText(this, R.string.settings_not_implemented, Toast.LENGTH_LONG).show();
                 return true;
         }
         return super.onOptionsItemSelected(item);
